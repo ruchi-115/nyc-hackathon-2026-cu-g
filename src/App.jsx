@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
+import { Html, Stars } from '@react-three/drei';
 import BreathingOrb from './BreathingOrb';
 import EntryUI from './EntryUI';
 import ParticleTransition from './ParticleTransition';
 import LoadingUI from './LoadingUI';
-import AssetGallery from './AssetGallery';
+import MainExperience from './MainExperience';
 
 // Background stars component for the campaign tree view
 function BackgroundStars() {
@@ -59,28 +59,32 @@ export default function App() {
             <Canvas 
                 camera={{ position: [0, 0, 5], fov: 45 }} 
                 dpr={[1, 2]}
-                style={{ 
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 1
-                }}
             >
                 {appState === 'ENTRY' && <BreathingOrb isListening={isListening} />}
                 {appState === 'GENERATING' && <ParticleTransition onComplete={handleLoadingComplete} />}
                 {appState === 'GENERATING_ASSET' && <ParticleTransition onComplete={handleAssetLoadingComplete} />}
-                {(appState === 'EXPERIENCE' || appState === 'ASSET_VIEW') && <BackgroundStars />}
+                {appState === 'ASSET_VIEW' && <BackgroundStars />}
+                
+                {appState === 'EXPERIENCE' && (
+                    <Suspense fallback={
+                        <Html center>
+                            <div style={{ 
+                                color: '#e8e6f0', 
+                                fontFamily: '"Space Grotesk", sans-serif',
+                                display: 'flex', alignItems: 'center', gap: '12px'
+                            }}>
+                                <div style={{
+                                    width: '8px', height: '8px', borderRadius: '50%',
+                                    background: '#00d4ff', animation: 'pulse 1s infinite'
+                                }} />
+                                Loading experience...
+                            </div>
+                        </Html>
+                    }>
+                        <MainExperience onNodeSelect={handleNodeSelect} />
+                    </Suspense>
+                )}
             </Canvas>
-
-            {/* Asset Gallery */}
-            {appState === 'EXPERIENCE' && (
-                <div style={{ position: 'relative', zIndex: 10 }}>
-                    <AssetGallery 
-                        userPrompt={userPrompt} 
-                        onAssetSelect={handleNodeSelect}
-                    />
-                </div>
-            )}
 
             {/* Asset View */}
             {appState === 'ASSET_VIEW' && selectedNode && (
@@ -127,7 +131,7 @@ export default function App() {
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="15 18 9 12 15 6" />
                             </svg>
-                            Back to Gallery
+                            Back to Experience
                         </button>
                         <div style={{
                             display: 'flex',

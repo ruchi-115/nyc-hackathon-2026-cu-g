@@ -436,8 +436,8 @@ function ScrollScene({ onNodeSelect }) {
     useFrame((state) => {
         const currentZ = THREE.MathUtils.lerp(15, -220, scroll.offset);
         state.camera.position.z = currentZ;
-        state.camera.position.y = Math.sin(scroll.offset * Math.PI) * 2;
-        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, state.mouse.x * 1, 0.05);
+        state.camera.position.y = 0; // Keep camera level to prevent panels from drifting
+        state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, state.mouse.x * 0.5, 0.05);
         state.camera.lookAt(0, 0, currentZ - 40);
     });
 

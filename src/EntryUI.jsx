@@ -115,11 +115,9 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                            <circle cx="12" cy="12" r="3" />
-                            <line x1="12" y1="3" x2="12" y2="9" />
-                            <line x1="12" y1="15" x2="12" y2="21" />
-                            <line x1="3" y1="12" x2="9" y2="12" />
-                            <line x1="15" y1="12" x2="21" y2="12" />
+                            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                            <polyline points="2 17 12 22 22 17" />
+                            <polyline points="2 12 12 17 22 12" />
                         </svg>
                     </div>
                     <span style={{ 
@@ -129,7 +127,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                         letterSpacing: '1px',
                         textTransform: 'uppercase'
                     }}>
-                        Gedanken Engine
+                        AdForge
                     </span>
                 </div>
             </div>
@@ -143,13 +141,13 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                     color: '#e8e6f0', fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: '300', 
                     margin: 0, letterSpacing: '-0.5px', lineHeight: 1.3
                 }}>
-                    What are we exploring today?
+                    What ad are we creating?
                 </h1>
                 <p style={{
                     color: '#6b6880', fontSize: '14px', maxWidth: '400px', margin: '16px auto 0',
                     lineHeight: 1.5
                 }}>
-                    Describe any concept and watch AI generate an immersive multimodal experience.
+                    Describe your product or campaign and AI will generate images, audio, and video.
                 </p>
             </div>
 

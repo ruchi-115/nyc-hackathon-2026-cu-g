@@ -6,6 +6,7 @@ import EntryUI from './EntryUI';
 import ParticleTransition from './ParticleTransition';
 import LoadingUI from './LoadingUI';
 import MainExperience from './MainExperience';
+import LandingPage from './LandingPage';
 
 // Background stars component for the campaign tree view
 function BackgroundStars() {
@@ -20,10 +21,14 @@ function BackgroundStars() {
 }
 
 export default function App() {
-    const [appState, setAppState] = useState('ENTRY');
+    const [appState, setAppState] = useState('LANDING');
     const [isListening, setIsListening] = useState(false);
     const [selectedNode, setSelectedNode] = useState(null);
     const [userPrompt, setUserPrompt] = useState('');
+
+    const handleEnterApp = () => {
+        setAppState('ENTRY');
+    };
 
     const handlePromptSubmit = (prompt) => {
         setUserPrompt(prompt);
@@ -60,6 +65,7 @@ export default function App() {
                 camera={{ position: [0, 0, 5], fov: 45 }} 
                 dpr={[1, 2]}
             >
+                {appState === 'LANDING' && <BackgroundStars />}
                 {appState === 'ENTRY' && <BreathingOrb isListening={isListening} />}
                 {appState === 'GENERATING' && <ParticleTransition onComplete={handleLoadingComplete} />}
                 {appState === 'GENERATING_ASSET' && <ParticleTransition onComplete={handleAssetLoadingComplete} />}
@@ -279,6 +285,9 @@ export default function App() {
                     </div>
                 </div>
             )}
+
+            {/* Landing Page */}
+            {appState === 'LANDING' && <LandingPage onEnter={handleEnterApp} />}
 
             {/* Entry UI */}
             {appState === 'ENTRY' && (

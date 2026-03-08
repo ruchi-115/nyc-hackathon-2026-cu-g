@@ -1,14 +1,14 @@
 import { useRef, useState, useMemo } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
-import { ScrollControls, useScroll, Html, Text, Stars, Float, MeshDistortMaterial } from '@react-three/drei';
+import { useFrame, useThree, useLoader } from '@react-three/fiber';
+import { ScrollControls, useScroll, Html, Text, Stars, Float, MeshDistortMaterial, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Generated content - 3 images, 3 audio, 1 video
 const generatedContent = {
     images: [
-        { id: 1, name: 'Hero Visual', description: 'Primary campaign imagery', type: 'image' },
-        { id: 2, name: 'Scene Illustration', description: 'Supporting visual narrative', type: 'image' },
-        { id: 3, name: 'Detail Render', description: 'Close-up product visualization', type: 'image' },
+        { id: 1, name: 'Hero Visual', description: 'Primary campaign imagery', type: 'image', src: '/images/space-hero.jpg' },
+        { id: 2, name: 'Scene Illustration', description: 'Supporting visual narrative', type: 'image', src: '/images/space-scene.jpg' },
+        { id: 3, name: 'Detail Render', description: 'Close-up product visualization', type: 'image', src: '/images/space-detail.jpg' },
     ],
     audio: [
         { id: 4, name: 'Narration Track', description: 'AI-generated voiceover', type: 'audio' },
@@ -68,14 +68,14 @@ function HolographicFrame({ width, height, color = '#00d4ff' }) {
     );
 }
 
-// 3D Display Panel for images/audio
-function AssetDisplayPanel({ data, position, rotation = [0, 0, 0], onSelect }) {
+// Image panel with texture
+function ImageDisplayPanel({ data, position, rotation = [0, 0, 0], onSelect }) {
     const [hovered, setHovered] = useState(false);
     const meshRef = useRef();
     const glowRef = useRef();
-
-    const isAudio = data.type === 'audio';
-    const accentColor = isAudio ? '#a855f7' : '#00d4ff';
+    const texture = useTexture(data.src);
+    
+    const accentColor = '#00d4ff';
 
     useFrame(({ clock }) => {
         if (meshRef.current) {
@@ -97,13 +97,129 @@ function AssetDisplayPanel({ data, position, rotation = [0, 0, 0], onSelect }) {
                 >
                     {/* Glow backdrop */}
                     <mesh ref={glowRef} position={[0, 0, -0.1]}>
-                        <planeGeometry args={isAudio ? [5, 5] : [7, 5]} />
+                        <planeGeometry args={[7, 5]} />
+                        <meshBasicMaterial color={accentColor} transparent opacity={0.1} />
+                    </mesh>
+
+                    {/* Main display surface with image texture */}
+                    <mesh>
+                        <planeGeometry args={[6, 4]} />
+                        <meshBasicMaterial 
+                            map={texture} 
+                            toneMapped={false}
+                        />
+                    </mesh>
+
+                    {/* Holographic frame */}
+                    <HolographicFrame width={6.2} height={4.2} color={hovered ? accentColor : '#7c3aed'} />
+
+                    {/* Content type indicator */}
+                    <mesh position={[-2.5, 1.6, 0.02]}>
+                        <planeGeometry args={[0.8, 0.3]} />
+                        <meshBasicMaterial color={accentColor} />
+                    </mesh>
+                    <Text position={[-2.5, 1.6, 0.03]} fontSize={0.12} color="#030014" anchorX="center">
+                        IMAGE
+                    </Text>
+
+                    {/* Node indicator */}
+                    <Text position={[0, -2.5, 0]} fontSize={0.2} color={hovered ? accentColor : '#6b6880'} letterSpacing={0.15}>
+                        {hovered ? 'VIEW DETAILS' : data.name.toUpperCase()}
+                    </Text>
+                </group>
+            </Float>
+
+            {/* Info panel */}
+            <Html position={[4.5, 0, 0]} transform distanceFactor={10}>
+                <div style={{
+                    background: hovered ? 'rgba(15, 7, 40, 0.95)' : 'rgba(3, 0, 20, 0.8)',
+                    backdropFilter: 'blur(20px)',
+                    border: `1px solid ${hovered ? accentColor : 'rgba(124, 58, 237, 0.3)'}`,
+                    borderRadius: '12px',
+                    padding: '24px',
+                    width: '240px',
+                    color: '#e8e6f0',
+                    fontFamily: '"Space Grotesk", sans-serif',
+                    transition: 'all 0.4s ease',
+                    cursor: 'pointer',
+                    boxShadow: hovered ? `0 0 30px ${accentColor}30` : 'none'
+                }}
+                onPointerEnter={() => { setHovered(true); document.body.style.cursor = 'pointer'; }}
+                onPointerLeave={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
+                onClick={() => onSelect(data)}
+                >
+                    <div style={{ 
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        borderBottom: '1px solid rgba(124, 58, 237, 0.3)', 
+                        paddingBottom: '12px', marginBottom: '16px' 
+                    }}>
+                        <span style={{ fontSize: '10px', letterSpacing: '2px', color: '#6b6880', textTransform: 'uppercase' }}>
+                            {data.type}
+                        </span>
+                        <span style={{ 
+                            fontSize: '10px', letterSpacing: '2px', 
+                            color: accentColor,
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                        }}>
+                            <span style={{ 
+                                width: '6px', height: '6px', borderRadius: '50%', 
+                                background: accentColor, boxShadow: `0 0 8px ${accentColor}` 
+                            }} />
+                            READY
+                        </span>
+                    </div>
+                    <h3 style={{ 
+                        fontSize: '16px', fontWeight: '400', color: '#e8e6f0', 
+                        margin: '0 0 8px 0', letterSpacing: '-0.5px' 
+                    }}>
+                        {data.name}
+                    </h3>
+                    <p style={{ 
+                        fontSize: '12px', color: '#a8a4b8', margin: 0, lineHeight: 1.5 
+                    }}>
+                        {data.description}
+                    </p>
+                </div>
+            </Html>
+        </group>
+    );
+}
+
+// Audio panel with waveform visualization
+function AudioDisplayPanel({ data, position, rotation = [0, 0, 0], onSelect }) {
+    const [hovered, setHovered] = useState(false);
+    const meshRef = useRef();
+    const glowRef = useRef();
+    
+    const accentColor = '#a855f7';
+
+    useFrame(({ clock }) => {
+        if (meshRef.current) {
+            meshRef.current.position.y = Math.sin(clock.getElapsedTime() * 0.5 + data.id) * 0.15;
+        }
+        if (glowRef.current) {
+            glowRef.current.material.opacity = hovered ? 0.3 : 0.1 + Math.sin(clock.getElapsedTime() * 2) * 0.05;
+        }
+    });
+
+    return (
+        <group position={position} rotation={rotation}>
+            <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.3}>
+                <group
+                    ref={meshRef}
+                    onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
+                    onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
+                    onClick={(e) => { e.stopPropagation(); onSelect(data); }}
+                >
+                    {/* Glow backdrop */}
+                    <mesh ref={glowRef} position={[0, 0, -0.1]}>
+                        <planeGeometry args={[5, 5]} />
                         <meshBasicMaterial color={accentColor} transparent opacity={0.1} />
                     </mesh>
 
                     {/* Main display surface */}
                     <mesh>
-                        <planeGeometry args={isAudio ? [4, 4] : [6, 4]} />
+                        <planeGeometry args={[4, 4]} />
                         <meshStandardMaterial
                             color={hovered ? '#1a0a3e' : '#0f0728'}
                             emissive={hovered ? accentColor : '#7c3aed'}
@@ -114,43 +230,34 @@ function AssetDisplayPanel({ data, position, rotation = [0, 0, 0], onSelect }) {
                     </mesh>
 
                     {/* Holographic frame */}
-                    <HolographicFrame width={isAudio ? 4.2 : 6.2} height={isAudio ? 4.2 : 4.2} color={hovered ? accentColor : '#7c3aed'} />
+                    <HolographicFrame width={4.2} height={4.2} color={hovered ? accentColor : '#7c3aed'} />
 
                     {/* Content type indicator */}
-                    <mesh position={[isAudio ? -1.5 : -2.5, isAudio ? 1.5 : 1.6, 0.02]}>
-                        <planeGeometry args={[isAudio ? 1 : 0.8, 0.3]} />
+                    <mesh position={[-1.5, 1.5, 0.02]}>
+                        <planeGeometry args={[1, 0.3]} />
                         <meshBasicMaterial color={accentColor} />
                     </mesh>
-                    <Text position={[isAudio ? -1.5 : -2.5, isAudio ? 1.5 : 1.6, 0.03]} fontSize={0.12} color="#030014" anchorX="center">
-                        {isAudio ? 'AUDIO' : 'IMAGE'}
+                    <Text position={[-1.5, 1.5, 0.03]} fontSize={0.12} color="#030014" anchorX="center">
+                        AUDIO
                     </Text>
 
-                    {/* Audio waveform or scan lines */}
-                    {isAudio ? (
-                        [...Array(12)].map((_, i) => (
-                            <mesh key={i} position={[-1.5 + i * 0.25, 0, 0.01]}>
-                                <planeGeometry args={[0.08, 0.5 + Math.sin(i * 0.8) * 0.8]} />
-                                <meshBasicMaterial color={accentColor} transparent opacity={0.5} />
-                            </mesh>
-                        ))
-                    ) : (
-                        [...Array(8)].map((_, i) => (
-                            <mesh key={i} position={[0, -1.8 + i * 0.5, 0.01]}>
-                                <planeGeometry args={[5.8, 0.01]} />
-                                <meshBasicMaterial color={accentColor} transparent opacity={0.1} />
-                            </mesh>
-                        ))
-                    )}
+                    {/* Audio waveform */}
+                    {[...Array(12)].map((_, i) => (
+                        <mesh key={i} position={[-1.5 + i * 0.25, 0, 0.01]}>
+                            <planeGeometry args={[0.08, 0.5 + Math.sin(i * 0.8) * 0.8]} />
+                            <meshBasicMaterial color={accentColor} transparent opacity={0.5} />
+                        </mesh>
+                    ))}
 
                     {/* Node indicator */}
-                    <Text position={[0, isAudio ? -2.5 : -2.5, 0]} fontSize={0.2} color={hovered ? accentColor : '#6b6880'} letterSpacing={0.15}>
+                    <Text position={[0, -2.5, 0]} fontSize={0.2} color={hovered ? accentColor : '#6b6880'} letterSpacing={0.15}>
                         {hovered ? 'VIEW DETAILS' : data.name.toUpperCase()}
                     </Text>
                 </group>
             </Float>
 
             {/* Info panel */}
-            <Html position={[isAudio ? 3.5 : 4.5, 0, 0]} transform distanceFactor={10}>
+            <Html position={[3.5, 0, 0]} transform distanceFactor={10}>
                 <div style={{
                     background: hovered ? 'rgba(15, 7, 40, 0.95)' : 'rgba(3, 0, 20, 0.8)',
                     backdropFilter: 'blur(20px)',
@@ -371,19 +478,19 @@ function ScrollScene({ onNodeSelect }) {
                     IMAGES
                 </Text>
             </group>
-            <AssetDisplayPanel 
+            <ImageDisplayPanel 
                 data={generatedContent.images[0]} 
                 position={[-6, 0, -30]} 
                 rotation={[0, 0.2, 0]}
                 onSelect={onNodeSelect} 
             />
-            <AssetDisplayPanel 
+            <ImageDisplayPanel 
                 data={generatedContent.images[1]} 
                 position={[6, 1, -50]} 
                 rotation={[0, -0.2, 0]}
                 onSelect={onNodeSelect} 
             />
-            <AssetDisplayPanel 
+            <ImageDisplayPanel 
                 data={generatedContent.images[2]} 
                 position={[-5, -0.5, -70]} 
                 rotation={[0, 0.15, 0]}
@@ -396,19 +503,19 @@ function ScrollScene({ onNodeSelect }) {
                     AUDIO
                 </Text>
             </group>
-            <AssetDisplayPanel 
+            <AudioDisplayPanel 
                 data={generatedContent.audio[0]} 
                 position={[5, 0, -100]} 
                 rotation={[0, -0.15, 0]}
                 onSelect={onNodeSelect} 
             />
-            <AssetDisplayPanel 
+            <AudioDisplayPanel 
                 data={generatedContent.audio[1]} 
                 position={[-5, 1, -120]} 
                 rotation={[0, 0.15, 0]}
                 onSelect={onNodeSelect} 
             />
-            <AssetDisplayPanel 
+            <AudioDisplayPanel 
                 data={generatedContent.audio[2]} 
                 position={[4, -0.5, -140]} 
                 rotation={[0, -0.1, 0]}

@@ -69,7 +69,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
             dotRefs.current.forEach(dot => {
                 if (dot) dot.style.transform = 'scaleY(1)';
             });
-            setLiveTranscript(""); // Clear transcript on stop
+            setLiveTranscript("");
         }
 
         return () => {
@@ -101,26 +101,95 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                 />
             )}
 
-            {/* HARD-PINNED TOP: Title */}
-            <h1 style={{
-                position: 'absolute', top: '15vh', width: '100%', textAlign: 'center', margin: 0,
-                color: 'white', fontSize: '20px', fontWeight: '400', letterSpacing: '2px', textTransform: 'uppercase',
-                opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
-            }}>
-                What universe are we building?
-            </h1>
-
-            {/* HARD-PINNED MIDDLE-TOP: Live Transcription Text */}
+            {/* Top Header with Brand */}
             <div style={{
-                position: 'absolute', top: '35vh', width: '100%', textAlign: 'center',
-                color: 'white', fontSize: '28px', fontWeight: '400',
-                opacity: isListening ? 1 : 0, transition: 'opacity 0.4s ease',
-                textShadow: '0 4px 12px rgba(0,0,0,0.5)', zIndex: 10
+                position: 'absolute', top: '24px', left: '32px', right: '32px',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                opacity: isListening ? 0.3 : 1, transition: 'opacity 0.4s ease',
+                pointerEvents: 'auto'
             }}>
-                {liveTranscript || (isListening ? "Listening..." : "")}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{
+                        width: '32px', height: '32px', borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="4" />
+                            <line x1="12" y1="2" x2="12" y2="4" />
+                            <line x1="12" y1="20" x2="12" y2="22" />
+                            <line x1="2" y1="12" x2="4" y2="12" />
+                            <line x1="20" y1="12" x2="22" y2="12" />
+                        </svg>
+                    </div>
+                    <span style={{ 
+                        color: '#e8e6f0', 
+                        fontSize: '14px', 
+                        fontWeight: '500', 
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase'
+                    }}>
+                        Gedanken Engine
+                    </span>
+                </div>
+                <div style={{ 
+                    display: 'flex', 
+                    gap: '8px', 
+                    alignItems: 'center',
+                    padding: '8px 16px',
+                    background: 'rgba(124, 58, 237, 0.15)',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(124, 58, 237, 0.3)'
+                }}>
+                    <div style={{ 
+                        width: '6px', height: '6px', borderRadius: '50%', 
+                        background: '#00d4ff',
+                        boxShadow: '0 0 8px #00d4ff'
+                    }} />
+                    <span style={{ color: '#a8a4b8', fontSize: '11px', letterSpacing: '1px' }}>
+                        ASTROPHYSICS LAB
+                    </span>
+                </div>
             </div>
 
-            {/* HARD-PINNED CENTER: The Waveform */}
+            {/* Main Title Section */}
+            <div style={{
+                position: 'absolute', top: '18vh', width: '100%', textAlign: 'center',
+                opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
+            }}>
+                <p style={{
+                    color: '#00d4ff', fontSize: '12px', fontWeight: '500', 
+                    letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 16px 0'
+                }}>
+                    Generative Laboratory
+                </p>
+                <h1 style={{
+                    color: '#e8e6f0', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: '300', 
+                    margin: 0, letterSpacing: '-1px', lineHeight: 1.2
+                }}>
+                    What cosmic mystery shall we explore?
+                </h1>
+                <p style={{
+                    color: '#6b6880', fontSize: '14px', maxWidth: '500px', margin: '20px auto 0',
+                    lineHeight: 1.6
+                }}>
+                    Describe any astrophysics concept - from black holes to quantum entanglement - 
+                    and watch as AI orchestrates an immersive learning experience.
+                </p>
+            </div>
+
+            {/* Live Transcription Text */}
+            <div style={{
+                position: 'absolute', top: '35vh', width: '100%', textAlign: 'center', padding: '0 20px',
+                color: '#e8e6f0', fontSize: '28px', fontWeight: '300',
+                opacity: isListening ? 1 : 0, transition: 'opacity 0.4s ease',
+                textShadow: '0 0 30px rgba(0, 212, 255, 0.5)', zIndex: 10
+            }}>
+                {liveTranscript || (isListening ? "Listening to the cosmos..." : "")}
+            </div>
+
+            {/* The Waveform */}
             <div style={{
                 position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                 display: isListening ? 'flex' : 'none', gap: '24px', alignItems: 'center', height: '80px', zIndex: 10
@@ -128,45 +197,118 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                 {[0, 1, 2, 3].map((i) => (
                     <div key={i} ref={el => dotRefs.current[i] = el}
                          style={{
-                             width: '24px', height: '24px', backgroundColor: '#ffffff', borderRadius: '50px',
-                             boxShadow: '0 0 20px rgba(255,255,255,0.8)', transition: 'transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1)'
+                             width: '20px', height: '20px', 
+                             background: 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)',
+                             borderRadius: '50px',
+                             boxShadow: '0 0 20px rgba(0, 212, 255, 0.6), 0 0 40px rgba(124, 58, 237, 0.4)', 
+                             transition: 'transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1)'
                          }}
                     />
                 ))}
             </div>
 
-            {/* HARD-PINNED MIDDLE-BOTTOM: Helper Text */}
+            {/* Helper Text */}
             <div style={{
                 position: 'absolute', bottom: '25vh', width: '100%', textAlign: 'center',
-                color: '#888', fontSize: '14px', letterSpacing: '1px',
+                color: '#6b6880', fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase',
                 opacity: isListening ? 1 : 0, transition: 'opacity 0.5s ease',
                 animation: isListening ? 'pulse 2s infinite' : 'none'
             }}>
-                Tap anywhere to generate
+                Tap anywhere to initialize
             </div>
 
-            {/* HARD-PINNED BOTTOM: Input Pill */}
+            {/* Quick Topic Pills */}
             <div style={{
-                position: 'absolute', bottom: '10vh', left: '50%', transform: 'translateX(-50%)',
+                position: 'absolute', bottom: '20vh', left: '50%', transform: 'translateX(-50%)',
+                display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center',
+                maxWidth: '600px', padding: '0 20px',
+                opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
+                pointerEvents: isListening ? 'none' : 'auto'
+            }}>
+                {['Black Holes', 'Neutron Stars', 'Dark Matter', 'Quantum Gravity'].map((topic) => (
+                    <button
+                        key={topic}
+                        onClick={() => onSubmit(`Explain ${topic}`)}
+                        style={{
+                            background: 'rgba(124, 58, 237, 0.1)',
+                            border: '1px solid rgba(124, 58, 237, 0.3)',
+                            borderRadius: '20px',
+                            padding: '8px 16px',
+                            color: '#a8a4b8',
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            fontFamily: '"Space Grotesk", sans-serif'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.background = 'rgba(124, 58, 237, 0.25)';
+                            e.target.style.borderColor = '#7c3aed';
+                            e.target.style.color = '#e8e6f0';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.background = 'rgba(124, 58, 237, 0.1)';
+                            e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)';
+                            e.target.style.color = '#a8a4b8';
+                        }}
+                    >
+                        {topic}
+                    </button>
+                ))}
+            </div>
+
+            {/* Input Pill */}
+            <div style={{
+                position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)',
                 pointerEvents: isListening ? 'none' : 'auto', opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
-                display: 'flex', alignItems: 'center', gap: '12px', background: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '50px', padding: '12px 24px', width: 'min(90%, 400px)', zIndex: 10
+                display: 'flex', alignItems: 'center', gap: '12px', 
+                background: 'rgba(15, 7, 40, 0.8)',
+                backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', 
+                border: '1px solid rgba(124, 58, 237, 0.3)',
+                borderRadius: '50px', padding: '14px 24px', width: 'min(90%, 480px)', zIndex: 10,
+                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)'
             }}>
                 <svg
                     onClick={() => setIsListening(true)}
-                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ cursor: 'pointer', flexShrink: 0 }}
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ cursor: 'pointer', flexShrink: 0, transition: 'all 0.3s ease' }}
+                    onMouseEnter={(e) => e.target.style.stroke = '#7c3aed'}
+                    onMouseLeave={(e) => e.target.style.stroke = '#00d4ff'}
                 >
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
                 <input
-                    type="text" placeholder="Describe a concept..."
+                    type="text" placeholder="Describe an astrophysics concept..."
                     value={prompt} onChange={(e) => setPrompt(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && prompt.trim() !== "") onSubmit(prompt); }}
-                    style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '16px', width: '100%', outline: 'none', fontFamily: '"Space Grotesk", sans-serif' }}
+                    style={{ 
+                        background: 'transparent', border: 'none', color: '#e8e6f0', 
+                        fontSize: '15px', width: '100%', outline: 'none', 
+                        fontFamily: '"Space Grotesk", sans-serif',
+                        letterSpacing: '0.3px'
+                    }}
                 />
+                <button
+                    onClick={() => { if (prompt.trim() !== "") onSubmit(prompt); }}
+                    disabled={prompt.trim() === ""}
+                    style={{
+                        background: prompt.trim() !== "" ? 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)' : 'rgba(107, 104, 128, 0.3)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '36px', height: '36px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        cursor: prompt.trim() !== "" ? 'pointer' : 'default',
+                        transition: 'all 0.3s ease',
+                        flexShrink: 0
+                    }}
+                >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
             </div>
 
         </div>

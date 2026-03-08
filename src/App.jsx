@@ -1,11 +1,11 @@
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Html, Stars } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import BreathingOrb from './BreathingOrb';
 import EntryUI from './EntryUI';
 import ParticleTransition from './ParticleTransition';
 import LoadingUI from './LoadingUI';
-import CampaignTree from './CampaignTree';
+import AssetGallery from './AssetGallery';
 
 // Background stars component for the campaign tree view
 function BackgroundStars() {
@@ -72,12 +72,12 @@ export default function App() {
                 {(appState === 'EXPERIENCE' || appState === 'ASSET_VIEW') && <BackgroundStars />}
             </Canvas>
 
-            {/* Campaign Tree Overlay */}
+            {/* Asset Gallery */}
             {appState === 'EXPERIENCE' && (
                 <div style={{ position: 'relative', zIndex: 10 }}>
-                    <CampaignTree 
+                    <AssetGallery 
                         userPrompt={userPrompt} 
-                        onNodeSelect={handleNodeSelect}
+                        onAssetSelect={handleNodeSelect}
                     />
                 </div>
             )}
@@ -127,31 +127,31 @@ export default function App() {
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="15 18 9 12 15 6" />
                             </svg>
-                            Back to Tree
+                            Back to Gallery
                         </button>
                         <div style={{
                             display: 'flex',
                             gap: '8px',
                             alignItems: 'center',
                             padding: '8px 16px',
-                            background: selectedNode.assetType === 'video' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(0, 212, 255, 0.1)',
+                            background: selectedNode.type === 'video' ? 'rgba(251, 191, 36, 0.1)' : selectedNode.type === 'audio' ? 'rgba(168, 85, 247, 0.1)' : 'rgba(0, 212, 255, 0.1)',
                             borderRadius: '20px',
-                            border: `1px solid ${selectedNode.assetType === 'video' ? 'rgba(251, 191, 36, 0.3)' : 'rgba(0, 212, 255, 0.3)'}`
+                            border: `1px solid ${selectedNode.type === 'video' ? 'rgba(251, 191, 36, 0.3)' : selectedNode.type === 'audio' ? 'rgba(168, 85, 247, 0.3)' : 'rgba(0, 212, 255, 0.3)'}`
                         }}>
                             <div style={{
                                 width: '6px',
                                 height: '6px',
                                 borderRadius: '50%',
-                                background: selectedNode.assetType === 'video' ? '#fbbf24' : '#00d4ff',
-                                boxShadow: `0 0 8px ${selectedNode.assetType === 'video' ? '#fbbf24' : '#00d4ff'}`
+                                background: selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff',
+                                boxShadow: `0 0 8px ${selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff'}`
                             }} />
                             <span style={{
-                                color: selectedNode.assetType === 'video' ? '#fbbf24' : '#00d4ff',
+                                color: selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff',
                                 fontSize: '11px',
                                 letterSpacing: '1px',
                                 textTransform: 'uppercase'
                             }}>
-                                {selectedNode.assetType || selectedNode.type}
+                                {selectedNode.type}
                             </span>
                         </div>
                     </div>
@@ -159,52 +159,64 @@ export default function App() {
                     {/* Asset Preview */}
                     <div style={{
                         width: '80%',
-                        maxWidth: '800px',
-                        aspectRatio: '16/9',
+                        maxWidth: selectedNode.type === 'audio' ? '500px' : '800px',
+                        aspectRatio: selectedNode.type === 'audio' ? '1/1' : '16/9',
                         background: 'rgba(15, 7, 40, 0.8)',
-                        border: `1px solid ${selectedNode.assetType === 'video' ? 'rgba(251, 191, 36, 0.3)' : 'rgba(124, 58, 237, 0.3)'}`,
+                        border: `1px solid ${selectedNode.type === 'video' ? 'rgba(251, 191, 36, 0.3)' : selectedNode.type === 'audio' ? 'rgba(168, 85, 247, 0.3)' : 'rgba(0, 212, 255, 0.3)'}`,
                         borderRadius: '16px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: '32px',
-                        boxShadow: `0 0 60px ${selectedNode.assetType === 'video' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(124, 58, 237, 0.1)'}`
+                        boxShadow: `0 0 60px ${selectedNode.type === 'video' ? 'rgba(251, 191, 36, 0.1)' : selectedNode.type === 'audio' ? 'rgba(168, 85, 247, 0.1)' : 'rgba(0, 212, 255, 0.1)'}`
                     }}>
                         <div style={{ textAlign: 'center', color: '#6b6880' }}>
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                                {selectedNode.assetType === 'video' ? (
-                                    <>
-                                        <polygon points="23 7 16 12 23 17 23 7" />
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                                    </>
-                                ) : selectedNode.assetType === 'image' ? (
-                                    <>
-                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                        <circle cx="8.5" cy="8.5" r="1.5" />
-                                        <polyline points="21 15 16 10 5 21" />
-                                    </>
-                                ) : (
-                                    <>
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                        <polyline points="14 2 14 8 20 8" />
-                                        <line x1="16" y1="13" x2="8" y2="13" />
-                                        <line x1="16" y1="17" x2="8" y2="17" />
-                                    </>
-                                )}
-                            </svg>
-                            <p style={{ marginTop: '16px', fontSize: '14px' }}>
-                                AI-Generated {selectedNode.assetType || 'Asset'} Preview
+                            <div style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                background: `${selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff'}15`,
+                                border: `1px solid ${selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff'}30`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto 16px',
+                                color: selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff',
+                            }}>
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                    {selectedNode.type === 'video' ? (
+                                        <>
+                                            <polygon points="23 7 16 12 23 17 23 7" />
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                        </>
+                                    ) : selectedNode.type === 'image' ? (
+                                        <>
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                            <circle cx="8.5" cy="8.5" r="1.5" />
+                                            <polyline points="21 15 16 10 5 21" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <path d="M9 18V5l12-2v13" />
+                                            <circle cx="6" cy="18" r="3" />
+                                            <circle cx="18" cy="16" r="3" />
+                                        </>
+                                    )}
+                                </svg>
+                            </div>
+                            <p style={{ fontSize: '14px', color: '#a8a4b8' }}>
+                                AI-Generated {selectedNode.type.charAt(0).toUpperCase() + selectedNode.type.slice(1)} Preview
                             </p>
                         </div>
                     </div>
 
                     {/* Asset Info */}
-                    <div style={{ textAlign: 'center', maxWidth: '500px' }}>
+                    <div style={{ textAlign: 'center', maxWidth: '500px', padding: '0 20px' }}>
                         <h1 style={{
                             color: '#e8e6f0',
-                            fontSize: '32px',
+                            fontSize: 'clamp(24px, 4vw, 32px)',
                             fontWeight: '300',
-                            margin: '0 0 12px 0',
+                            margin: '0 0 8px 0',
                             letterSpacing: '-1px'
                         }}>
                             {selectedNode.name}
@@ -212,20 +224,28 @@ export default function App() {
                         <p style={{
                             color: '#6b6880',
                             fontSize: '14px',
-                            margin: '0 0 32px 0',
-                            lineHeight: 1.6
+                            margin: '0 0 8px 0',
+                            lineHeight: 1.5
                         }}>
-                            Generated for the "{userPrompt}" campaign
+                            {selectedNode.description}
+                        </p>
+                        <p style={{
+                            color: '#4a4660',
+                            fontSize: '12px',
+                            margin: '0 0 32px 0',
+                        }}>
+                            Generated for "{userPrompt}"
                         </p>
                         <div style={{
                             display: 'flex',
                             gap: '12px',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            flexWrap: 'wrap'
                         }}>
                             <button
                                 style={{
                                     padding: '12px 24px',
-                                    background: 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)',
+                                    background: `linear-gradient(135deg, ${selectedNode.type === 'video' ? '#fbbf24' : selectedNode.type === 'audio' ? '#a855f7' : '#00d4ff'} 0%, #7c3aed 100%)`,
                                     border: 'none',
                                     borderRadius: '8px',
                                     color: '#fff',
@@ -235,7 +255,7 @@ export default function App() {
                                     fontFamily: '"Space Grotesk", sans-serif'
                                 }}
                             >
-                                Download Asset
+                                {selectedNode.type === 'audio' ? 'Play Audio' : selectedNode.type === 'video' ? 'Play Video' : 'View Full Size'}
                             </button>
                             <button
                                 style={{

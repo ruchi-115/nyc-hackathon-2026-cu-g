@@ -120,8 +120,6 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                             <line x1="12" y1="15" x2="12" y2="21" />
                             <line x1="3" y1="12" x2="9" y2="12" />
                             <line x1="15" y1="12" x2="21" y2="12" />
-                            <line x1="5.6" y1="5.6" x2="9.2" y2="9.2" />
-                            <line x1="14.8" y1="14.8" x2="18.4" y2="18.4" />
                         </svg>
                     </div>
                     <span style={{ 
@@ -134,49 +132,24 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                         Gedanken Engine
                     </span>
                 </div>
-                <div style={{ 
-                    display: 'flex', 
-                    gap: '8px', 
-                    alignItems: 'center',
-                    padding: '8px 16px',
-                    background: 'rgba(124, 58, 237, 0.15)',
-                    borderRadius: '20px',
-                    border: '1px solid rgba(124, 58, 237, 0.3)'
-                }}>
-                    <div style={{ 
-                        width: '6px', height: '6px', borderRadius: '50%', 
-                        background: '#00d4ff',
-                        boxShadow: '0 0 8px #00d4ff'
-                    }} />
-                    <span style={{ color: '#a8a4b8', fontSize: '11px', letterSpacing: '1px' }}>
-                        CREATIVE STUDIO
-                    </span>
-                </div>
             </div>
 
             {/* Main Title Section */}
             <div style={{
-                position: 'absolute', top: '18vh', width: '100%', textAlign: 'center',
+                position: 'absolute', top: '20vh', width: '100%', textAlign: 'center',
                 opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
             }}>
-                <p style={{
-                    color: '#00d4ff', fontSize: '12px', fontWeight: '500', 
-                    letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 16px 0'
-                }}>
-                    Generative Campaign Studio
-                </p>
                 <h1 style={{
-                    color: '#e8e6f0', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: '300', 
-                    margin: 0, letterSpacing: '-1px', lineHeight: 1.2
+                    color: '#e8e6f0', fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: '300', 
+                    margin: 0, letterSpacing: '-0.5px', lineHeight: 1.3
                 }}>
-                    What story are we telling?
+                    What are we exploring today?
                 </h1>
                 <p style={{
-                    color: '#6b6880', fontSize: '14px', maxWidth: '500px', margin: '20px auto 0',
-                    lineHeight: 1.6
+                    color: '#6b6880', fontSize: '14px', maxWidth: '400px', margin: '16px auto 0',
+                    lineHeight: 1.5
                 }}>
-                    Describe your product or idea and watch as AI orchestrates 
-                    branching creative directions with generated visuals, scripts, and assets.
+                    Describe any concept and watch AI generate an immersive multimodal experience.
                 </p>
             </div>
 
@@ -218,45 +191,6 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                 Tap anywhere to generate
             </div>
 
-            {/* Quick Topic Pills */}
-            <div style={{
-                position: 'absolute', bottom: '20vh', left: '50%', transform: 'translateX(-50%)',
-                display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center',
-                maxWidth: '700px', padding: '0 20px',
-                opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
-                pointerEvents: isListening ? 'none' : 'auto'
-            }}>
-                {['Ocean Plastic Sneakers', 'AI Wellness App', 'Sustainable Coffee Brand', 'Electric Bike Launch'].map((topic) => (
-                    <button
-                        key={topic}
-                        onClick={() => onSubmit(topic)}
-                        style={{
-                            background: 'rgba(124, 58, 237, 0.1)',
-                            border: '1px solid rgba(124, 58, 237, 0.3)',
-                            borderRadius: '20px',
-                            padding: '8px 16px',
-                            color: '#a8a4b8',
-                            fontSize: '12px',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            fontFamily: '"Space Grotesk", sans-serif'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.background = 'rgba(124, 58, 237, 0.25)';
-                            e.target.style.borderColor = '#7c3aed';
-                            e.target.style.color = '#e8e6f0';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.background = 'rgba(124, 58, 237, 0.1)';
-                            e.target.style.borderColor = 'rgba(124, 58, 237, 0.3)';
-                            e.target.style.color = '#a8a4b8';
-                        }}
-                    >
-                        {topic}
-                    </button>
-                ))}
-            </div>
-
             {/* Input Pill */}
             <div style={{
                 position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)',
@@ -281,7 +215,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                     <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
                 <input
-                    type="text" placeholder="Describe your product or campaign idea..."
+                    type="text" placeholder="Describe any concept to explore..."
                     value={prompt} onChange={(e) => setPrompt(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && prompt.trim() !== "") onSubmit(prompt); }}
                     style={{ 

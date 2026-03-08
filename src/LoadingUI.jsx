@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 export default function LoadingUI() {
     const phases = [
         { text: "Initializing Gedanken Engine", icon: "engine" },
-        { text: "Querying Cosmic Database", icon: "database" },
-        { text: "Generating Veo Visualizations", icon: "video" },
-        { text: "Rendering Nano Banana Assets", icon: "image" },
-        { text: "Orchestrating Narrative Flow", icon: "wave" }
+        { text: "Analyzing Creative Brief", icon: "database" },
+        { text: "Generating Veo Backgrounds", icon: "video" },
+        { text: "Rendering Visual Assets", icon: "image" },
+        { text: "Building Campaign Tree", icon: "wave" }
     ];
 
     const [phaseIndex, setPhaseIndex] = useState(0);

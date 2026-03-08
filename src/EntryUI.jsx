@@ -115,12 +115,13 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <circle cx="12" cy="12" r="4" />
-                            <line x1="12" y1="2" x2="12" y2="4" />
-                            <line x1="12" y1="20" x2="12" y2="22" />
-                            <line x1="2" y1="12" x2="4" y2="12" />
-                            <line x1="20" y1="12" x2="22" y2="12" />
+                            <circle cx="12" cy="12" r="3" />
+                            <line x1="12" y1="3" x2="12" y2="9" />
+                            <line x1="12" y1="15" x2="12" y2="21" />
+                            <line x1="3" y1="12" x2="9" y2="12" />
+                            <line x1="15" y1="12" x2="21" y2="12" />
+                            <line x1="5.6" y1="5.6" x2="9.2" y2="9.2" />
+                            <line x1="14.8" y1="14.8" x2="18.4" y2="18.4" />
                         </svg>
                     </div>
                     <span style={{ 
@@ -148,7 +149,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                         boxShadow: '0 0 8px #00d4ff'
                     }} />
                     <span style={{ color: '#a8a4b8', fontSize: '11px', letterSpacing: '1px' }}>
-                        ASTROPHYSICS LAB
+                        CREATIVE STUDIO
                     </span>
                 </div>
             </div>
@@ -162,20 +163,20 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                     color: '#00d4ff', fontSize: '12px', fontWeight: '500', 
                     letterSpacing: '3px', textTransform: 'uppercase', margin: '0 0 16px 0'
                 }}>
-                    Generative Laboratory
+                    Generative Campaign Studio
                 </p>
                 <h1 style={{
                     color: '#e8e6f0', fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: '300', 
                     margin: 0, letterSpacing: '-1px', lineHeight: 1.2
                 }}>
-                    What cosmic mystery shall we explore?
+                    What story are we telling?
                 </h1>
                 <p style={{
                     color: '#6b6880', fontSize: '14px', maxWidth: '500px', margin: '20px auto 0',
                     lineHeight: 1.6
                 }}>
-                    Describe any astrophysics concept - from black holes to quantum entanglement - 
-                    and watch as AI orchestrates an immersive learning experience.
+                    Describe your product or idea and watch as AI orchestrates 
+                    branching creative directions with generated visuals, scripts, and assets.
                 </p>
             </div>
 
@@ -186,7 +187,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                 opacity: isListening ? 1 : 0, transition: 'opacity 0.4s ease',
                 textShadow: '0 0 30px rgba(0, 212, 255, 0.5)', zIndex: 10
             }}>
-                {liveTranscript || (isListening ? "Listening to the cosmos..." : "")}
+                {liveTranscript || (isListening ? "Listening..." : "")}
             </div>
 
             {/* The Waveform */}
@@ -214,21 +215,21 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                 opacity: isListening ? 1 : 0, transition: 'opacity 0.5s ease',
                 animation: isListening ? 'pulse 2s infinite' : 'none'
             }}>
-                Tap anywhere to initialize
+                Tap anywhere to generate
             </div>
 
             {/* Quick Topic Pills */}
             <div style={{
                 position: 'absolute', bottom: '20vh', left: '50%', transform: 'translateX(-50%)',
                 display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center',
-                maxWidth: '600px', padding: '0 20px',
+                maxWidth: '700px', padding: '0 20px',
                 opacity: isListening ? 0 : 1, transition: 'opacity 0.4s ease',
                 pointerEvents: isListening ? 'none' : 'auto'
             }}>
-                {['Black Holes', 'Neutron Stars', 'Dark Matter', 'Quantum Gravity'].map((topic) => (
+                {['Ocean Plastic Sneakers', 'AI Wellness App', 'Sustainable Coffee Brand', 'Electric Bike Launch'].map((topic) => (
                     <button
                         key={topic}
-                        onClick={() => onSubmit(`Explain ${topic}`)}
+                        onClick={() => onSubmit(topic)}
                         style={{
                             background: 'rgba(124, 58, 237, 0.1)',
                             border: '1px solid rgba(124, 58, 237, 0.3)',
@@ -280,7 +281,7 @@ export default function EntryUI({ onSubmit, isListening, setIsListening }) {
                     <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
                 <input
-                    type="text" placeholder="Describe an astrophysics concept..."
+                    type="text" placeholder="Describe your product or campaign idea..."
                     value={prompt} onChange={(e) => setPrompt(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && prompt.trim() !== "") onSubmit(prompt); }}
                     style={{ 
